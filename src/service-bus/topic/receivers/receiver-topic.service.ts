@@ -1,11 +1,16 @@
 import { ServiceBusClient, delay } from '@azure/service-bus';
 import { Injectable } from '@nestjs/common';
+
 //https://docs.microsoft.com/pt-br/azure/service-bus-messaging/service-bus-nodejs-how-to-use-queues
 @Injectable()
-export class ReceiverQueueService {
-  async receive(connectionString: string, queueName: string) {
+export class ReceiverTopicService {
+  async receive(
+    connectionString: string,
+    topicName: string,
+    subscriptionName: string,
+  ) {
     const sbClient = new ServiceBusClient(connectionString);
-    const receiver = sbClient.createReceiver(queueName);
+    const receiver = sbClient.createReceiver(topicName, subscriptionName);
 
     receiver.subscribe({
       processMessage: this.receiveMessage,

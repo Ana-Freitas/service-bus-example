@@ -4,8 +4,7 @@ import { SenderQueueService } from './queue/sender/sender-queue.service';
 import { ReceiverQueueService } from './queue/receiver/receiver-queue.service';
 import { TopicController } from './topic/topic.controller';
 import { SenderTopicService } from './topic/sender/sender-topic.service';
-import { Receiver1TopicService } from './topic/receivers/receiver1-topic.service';
-import { Receiver2TopicService } from './topic/receivers/receiver2-topic.service';
+import { ReceiverTopicService } from './topic/receivers/receiver-topic.service';
 
 @Module({
   imports: [],
@@ -14,8 +13,7 @@ import { Receiver2TopicService } from './topic/receivers/receiver2-topic.service
     SenderQueueService,
     ReceiverQueueService,
     SenderTopicService,
-    Receiver1TopicService,
-    Receiver2TopicService,
+    ReceiverTopicService,
   ],
 })
 export class ServiceBusModule {}
