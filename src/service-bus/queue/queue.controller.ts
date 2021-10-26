@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Post } from '@nestjs/common';
 import { ReceiverQueueService } from './receiver/receiver-queue.service';
 import { SenderQueueService } from './sender/sender-queue.service';
 
@@ -19,7 +19,7 @@ export class QueueController {
     return await this.receiverService.receive();
   }
 
-  @Get('sender')
+  @Post('sender')
   async sender() {
     return await this.senderQueueService.sendMessages();
   }
