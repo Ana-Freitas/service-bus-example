@@ -2,7 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
-  Get,
+  Inject,
   Post,
 } from '@nestjs/common';
 import { ReceiverQueueService } from './receiver/receiver-queue.service';
@@ -13,37 +13,25 @@ export class QueueController {
   constructor(
     private readonly receiverService: ReceiverQueueService,
     private senderQueueService: SenderQueueService,
+    @Inject('QUEUE_NAME') private readonly queue: string,
   ) {}
 
-  @Get()
-  getHello(): string {
-    return this.receiverService.getHello();
-  }
-
-  @Get('receiver')
-  async receiver(
-    @Body('connectionString') connectionString: string,
-    @Body('queueName') queueName: string,
-  ) {
-    if (!connectionString || !queueName) {
-      throw new BadRequestException();
-    }
-    return await this.receiverService.receive(connectionString, queueName);
-  }
+  // @Get('receiver')
+  // async receiver(
+  //   @Body('connectionString') connectionString: string,
+  //   @Body('queueName') queueName: string,
+  // ) {
+  //   if (!connectionString || !queueName) {
+  //     throw new BadRequestException();
+  //   }
+  //   return await this.receiverService.receive(connectionString, queueName);
+  // }
 
   @Post('sender')
-  async sender(
-    @Body('connectionString') connectionString: string,
-    @Body('queueName') queueName: string,
-    @Body('messages') messages: Array<any>,
-  ) {
-    if (!connectionString || !queueName || !messages) {
-      throw new BadRequestException();
+  async sender(@Body() messages: any) {
+    if (!messages) {
+      throw new BadRequestException('No messages');
     }
-    return await this.senderQueueService.sendMessages(
-      connectionString,
-      queueName,
-      messages,
-    );
+    return await this.senderQueueService.sendMessages(this.queue, messages);
   }
 }
