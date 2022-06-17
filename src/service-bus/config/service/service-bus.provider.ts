@@ -14,4 +14,17 @@ export class ServiceBusProvider {
       body: messages,
     });
   }
+
+  async receiveMessage(queueOrTopicName: string) {
+    const receiver = this.serviceBus.createReceiver(queueOrTopicName);
+    receiver.receiveMode = 'receiveAndDelete';
+    const received = await receiver.receiveMessages(1);
+    const messages = [];
+
+    for (const message of received) {
+      messages.push(message.body);
+    }
+
+    return messages;
+  }
 }

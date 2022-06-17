@@ -7,9 +7,10 @@ import { SenderTopicService } from './topic/sender/sender-topic.service';
 import { ReceiverTopicService } from './topic/receivers/receiver-topic.service';
 import { ServiceBusProvider } from './config/service/service-bus.provider';
 import 'dotenv/config';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
-  imports: [],
+  imports: [ScheduleModule.forRoot()],
   controllers: [QueueController, TopicController],
   providers: [
     SenderQueueService,
