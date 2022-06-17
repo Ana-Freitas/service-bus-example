@@ -16,13 +16,16 @@ export class ServiceBusProvider {
   }
 
   async receiveMessage(queueOrTopicName: string) {
-    const receiver = this.serviceBus.createReceiver(queueOrTopicName);
-    receiver.receiveMode = 'receiveAndDelete';
+    const receiver = this.serviceBus.createReceiver(queueOrTopicName, {
+      receiveMode: 'peekLock',
+    });
+
     const received = await receiver.receiveMessages(1);
     const messages = [];
 
     for (const message of received) {
       messages.push(message.body);
+      receiver.completeMessage(message);
     }
 
     return messages;
