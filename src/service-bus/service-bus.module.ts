@@ -20,6 +20,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     ServiceBusProvider,
     { provide: 'QUEUE_NAME', useValue: process.env.QUEUE_NAME },
     { provide: 'TOPIC_NAME', useValue: process.env.TOPIC_NAME },
+    { provide: 'SUBSCRIPTION', useValue: process.env.SUBSCRIPTION },
     { provide: 'CONNECTION', useValue: process.env.ENDPOINT_SB },
   ],
 })

@@ -3,16 +3,23 @@ import {
   Body,
   Controller,
   Get,
+  Inject,
+  Logger,
   Post,
 } from '@nestjs/common';
+import { Cron, CronExpression } from '@nestjs/schedule';
 import { ReceiverTopicService } from './receivers/receiver-topic.service';
 import { SenderTopicService } from './sender/sender-topic.service';
 
 @Controller('topic')
 export class TopicController {
+  private readonly logger = new Logger(TopicController.name);
+
   constructor(
     private senderService: SenderTopicService,
     private receiverService: ReceiverTopicService,
+    @Inject('TOPIC_NAME') private readonly topic: string,
+    @Inject('SUBSCRIPTION') private readonly subscription: string,
   ) {}
 
   @Get()
@@ -21,34 +28,20 @@ export class TopicController {
   }
 
   @Post('sender')
-  async send(
-    @Body('connectionString') connectionString: string,
-    @Body('topicName') topicName: string,
-    @Body('messages') messages: Array<any>,
-  ) {
-    if (!connectionString || !topicName || !messages) {
-      throw new BadRequestException();
+  async sender(@Body() messages: any) {
+    if (!messages) {
+      throw new BadRequestException('No messages');
     }
-    return await this.senderService.sendMessages(
-      connectionString,
-      topicName,
-      messages,
-    );
+    return await this.senderService.sendMessages(this.topic, messages);
   }
 
-  @Get('receiver')
-  async receive(
-    @Body('connectionString') connectionString: string,
-    @Body('topicName') topicName: string,
-    @Body('subscription') subscriptionName,
-  ) {
-    if (!connectionString || !topicName || !subscriptionName) {
-      throw new BadRequestException();
-    }
-    return await this.receiverService.receive(
-      connectionString,
-      topicName,
-      subscriptionName,
+  @Cron(CronExpression.EVERY_30_SECONDS)
+  async receiver() {
+    this.logger.debug('Called when the current second is 30');
+    const messages = await this.receiverService.receive(
+      this.topic,
+      this.subscription,
     );
+    this.logger.debug(JSON.stringify(messages));
   }
 }

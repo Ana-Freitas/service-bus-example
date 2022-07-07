@@ -15,10 +15,14 @@ export class ServiceBusProvider {
     });
   }
 
-  async receiveMessage(queueOrTopicName: string) {
-    const receiver = this.serviceBus.createReceiver(queueOrTopicName, {
-      receiveMode: 'peekLock',
-    });
+  async receiveMessage(queueOrTopicName: string, subscription?: string) {
+    const receiver = this.serviceBus.createReceiver(
+      queueOrTopicName,
+      subscription,
+      {
+        receiveMode: 'peekLock',
+      },
+    );
 
     const received = await receiver.receiveMessages(1);
     const messages = [];
